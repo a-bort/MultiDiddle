@@ -1,4 +1,5 @@
 var express = require('express')
+  , port = process.env.PORT || 3003
   , app = express()
   , path = require('path')
   , favicon = require('serve-favicon');
@@ -16,6 +17,6 @@ app.get('*', function(req, res){
   res.render('multididdle');
 })
 
-app.listen(3003, function () {
-  console.log('Listening on port 3003');
+app.listen(port, function () {
+  console.log('Listening on port ' + port);
 });
