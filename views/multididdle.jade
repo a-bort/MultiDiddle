@@ -1,0 +1,71 @@
+html(ng-app="multiDiddleApp")
+  head
+    title MultiDiddle
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js")
+    script(type="text/javascript").
+      angular.module('multiDiddleApp', [])
+        .controller('MultiDiddleController', function(){
+          var self = this;
+          self.input = undefined;
+
+          self.go = function(){
+            if(self.input){
+              self.patterns = generatePatterns(self.input);
+            }
+          };
+
+          self.patterns = [];
+        });
+
+      generatePatterns = function(length){
+        var list = generateFullList(length);
+        return filterList(list);
+      };
+
+      generateFullList = function(length){
+        var maxNum = Math.pow(2, length);
+        var list = [];
+        for(var i = 0; i < maxNum; i++){
+          var decrementor = i;
+          var str = "";
+          for(var j = length - 1; j >= 0; j--){
+            var comparator = Math.pow(2, j);
+            if(decrementor >= comparator){
+              str += "R";
+              decrementor -= comparator;
+            } else{
+              str += "L";
+            }
+          }
+          list.push(str);
+        }
+        return list;
+      };
+
+      filterList = function(list){
+        var filtered = [];
+        for(var i = 0; i < list.length; i++){
+          var str = list[i];
+          var valid = true;
+          for(var j = 0; j < str.length - 2; j++){
+            if(str[j] == str[j+1] && str[j+1] == str[j+2]){
+              valid = false;
+              continue;
+            }
+          }
+          if(valid){
+            filtered.push(str);
+          }
+        }
+        return filtered;
+      };
+
+  body(ng-controller="MultiDiddleController as mdc")
+    div
+      label Notes per group:
+      input(type="number" placeholder="e.g. 5" min="3" max="16" ng-model="mdc.input")
+      button(ng-click="mdc.go()") Go!
+    table(style="margin-top: 10px;")
+      tr(ng-repeat="pattern in mdc.patterns")
+        td {{pattern}}
